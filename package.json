@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=development nodemon app"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +13,11 @@
     "body-parser": "^1.19.0",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
+    "koa-json-error": "^3.1.2",
     "koa-router": "^10.1.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.12"
   }
 }
