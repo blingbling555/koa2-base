@@ -6,7 +6,11 @@ class UsersCtl {
     ctx.body = 'findById'
   }
   create(ctx) {
-    ctx.body = 'create'
+    ctx.verifyParams({
+      name: { type: 'string', required: true },
+      age: { type: 'number', required: true },
+    })
+    ctx.body = 'success'
   }
   update(ctx) {
     ctx.body = 'update'

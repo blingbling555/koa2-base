@@ -1,8 +1,13 @@
 const Koa = require('koa')
 const app = new Koa()
 const BodyParser = require('koa-bodyparser')
+
+const parameter = require('koa-parameter');
+app.use(parameter(app))
+
 const routing = require('./routes');
 const error = require('koa-json-error')
+
 // 自己写的错误处理
 // app.use(async (ctx, next) => {
 //   try {
