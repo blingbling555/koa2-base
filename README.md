@@ -13,3 +13,13 @@ nodemon --inspect index.js
 node index.js 
 ```
 
+# 插件的使用
+### mongoose
+```bash
+npm i mongoose --save
+```
+使用
+```js
+const mongoose = require('mongoose')
+mongoose.connect(mongodb+srv://wangling:<password>@cluster0.hbo6k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority)
+```
