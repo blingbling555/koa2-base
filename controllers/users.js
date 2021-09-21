@@ -24,7 +24,7 @@ class UsersCtl {
     ctx.body = user
   }
   async delete(ctx) {
-    const user = await  User.findByIdAndDelete(ctx.params.id, ctx.request.body)
+    const user = await  User.findByIdAndDelete(ctx.params.id)
     if (!user) { ctx.throw(404, '用户不存在')}
     ctx.body = user
   }
