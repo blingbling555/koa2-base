@@ -3,6 +3,12 @@ const jsonwebtoken = require('jsonwebtoken')
 // 密码不建议写在代码里面，根据环境变量来的
 const { secret } = require("../config")
 class UsersCtl {
+  async checkOwner(ctx, next) {
+    if (ctx.param.id !== ctx.state.user._id) {
+      ctx.throw(403, '没有权限')
+    }
+    await  next()
+  }
   async find(ctx) {
     ctx.body = await User.find()
   }
