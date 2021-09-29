@@ -4,7 +4,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const { secret } = require("../config")
 class UsersCtl {
   async checkOwner(ctx, next) {
-    if (ctx.param.id !== ctx.state.user._id) {
+    if (ctx.params.id !== ctx.state.user._id) {
       ctx.throw(403, '没有权限')
     }
     await  next()
@@ -13,7 +13,10 @@ class UsersCtl {
     ctx.body = await User.find()
   }
   async findById(ctx) {
-    const user = await User.findById(ctx.params.id)
+    const { fields = '' } = ctx.query;
+    const selectFields = fields.split(';').filter(f => f).map(f => ' +' + f).join('');
+    console.log(selectFields)
+    const user = await User.findById(ctx.params.id).select(selectFields)
     if (!user) { ctx.throw(404, '用户不存在')}
     ctx.body = user
   }
@@ -31,8 +34,15 @@ class UsersCtl {
   async update(ctx) {
     ctx.verifyParams({
       name: { type: 'string', required: false },
-      password: { type: 'string', required: false}
-    })
+      password: { type: 'string', required: false },
+      avatar_url: { type: 'string', required: false },
+      gender: { type: 'string', required: false },
+      headline: { type: 'string', required: false },
+      locations: { type: 'array', itemType: 'string', required: false },
+      business: { type: 'string', required: false },
+      employments: { type: 'array', itemType: 'object', required: false },
+      educations: { type: 'array', itemType: 'object', required: false },
+    });
     const user = await  User.findOneAndUpdate(ctx.params.id, ctx.request.body)
     if (!user) { ctx.throw(404, '用户不存在')}
     ctx.body = user
@@ -49,7 +59,6 @@ class UsersCtl {
      password: { type: 'string', required: true}
    })
    const user = await User.findOne(ctx.request.body)
-   console.log(user)
    if (!user) { ctx.throw(401, '用户名或密码不正确') }
    const {_id, name } = user
    const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: '1d'})
