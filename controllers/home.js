@@ -8,11 +8,6 @@ class HomeCtl {
     const basename = path.basename(file.path);
     ctx.body = { url: `${ctx.origin}/uploads/${basename}` };
   }
-
-  testPost(ctx) {
-    console.log(ctx, ctx.request.body)
-    ctx.body = {msg: '这是数据'};
-  }
 }
 
 module.exports = new HomeCtl();
