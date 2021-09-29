@@ -66,4 +66,14 @@ jwt.verify(token, 'sectet')
 - 定义了一种紧凑且独立的方式，可以将各方之间的信息作为json对象进行安全传输
 - 该信息可以验证和信任，因为是经过数字签名的
 
+#### 插件
+用插件 kao-jwt
 
+### 上传图片
+操作步骤
+- 安装koa-body,替换koa-bodyparser
+  - 因为koa-bodyparser只支持form和json，不支持上传文件
+- 设置图片上传目录
+  - 如果不使用目录会上传到临时目录中，过段时间就 没了
+- 安装koa-static静态服务
+- 设置静态文件目录（通常是public）
