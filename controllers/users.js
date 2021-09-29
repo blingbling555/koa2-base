@@ -15,7 +15,6 @@ class UsersCtl {
   async findById(ctx) {
     const { fields = '' } = ctx.query;
     const selectFields = fields.split(';').filter(f => f).map(f => ' +' + f).join('');
-    console.log(selectFields)
     const user = await User.findById(ctx.params.id).select(selectFields)
     if (!user) { ctx.throw(404, '用户不存在')}
     ctx.body = user
@@ -64,6 +63,51 @@ class UsersCtl {
    const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: '1d'})
    ctx.body = { token }
  }
+  // 关注人列表
+  async listFollowing(ctx) {
+    //
+
+    /*
+    *    在 model里面用下面写法
+    *    type: Schema.Types.ObjectId,
+         ref: "User"
+        * 在这里使用 populate('following')，
+        * 就可以获取到用户列表了，不然获取的是用户id
+    * */
+    const user = await User.findById(ctx.params.id).select('+following').populate('following');
+    if (!user) { ctx.throw(404, '用户不存在'); }
+    ctx.body = user.following;
+  }
+  // 关注某人
+  async follow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+following');
+    if (!me.following.map(id => id.toString()).includes(ctx.params.id)) {
+      me.following.push(ctx.params.id);
+      me.save();
+    }
+    ctx.status = 204;
+  }
+  // 取消关注
+  async unfollow(ctx) {
+    const me = await User.findById(ctx.state.user._id).select('+following');
+    const index = me.following.map(id => id.toString()).indexOf(ctx.params.id);
+    if (index > -1) {
+      me.following.splice(index, 1);
+      me.save();
+    }
+    ctx.status = 204;
+  }
+  // 获取粉丝列表
+  async listFollowers(ctx) {
+    // 表示用户列表的following数组里面包含该id
+    const users = await User.find({ following: ctx.params.id });
+    ctx.body = users;
+  }
+  async checkUserExist(ctx, next) {
+    const user = await User.findById(ctx.params.id);
+    if (!user) { ctx.throw(404, '用户不存在'); }
+    await next();
+  }
 }
 
 module.exports = new UsersCtl()

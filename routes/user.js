@@ -10,7 +10,12 @@ const {
     update,
     delete: del,
     login,
-    checkOwner
+    checkOwner,
+    listFollowing,
+    follow,
+    unfollow,
+    listFollowers,
+    checkUserExist
 } = require('../controllers/users');
 
 // 认证token：token才从前端headers的authorization属性传过来
@@ -34,5 +39,9 @@ router.patch('/:id',auth, checkOwner, update);
 // 两个中间件 先授权 在检查
 router.delete('/:id',auth, checkOwner, del);
 router.post('/login', login);
-
+router.get('/:id/following', checkUserExist, listFollowing)
+router.get('/:id/listFollowers', checkUserExist, listFollowers)
+// 这里必须要鉴权，因为需要把你添加到下面id里面去  在控制器里面需要获取ctx.state.user._id
+router.put('/following/:id', auth, checkUserExist, follow)
+router.delete('/following/:id', auth, checkUserExist, unfollow);
 module.exports = router;
